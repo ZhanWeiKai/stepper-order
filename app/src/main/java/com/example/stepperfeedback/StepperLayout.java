@@ -478,8 +478,15 @@ public class StepperLayout extends LinearLayout implements TabsContainer.TabItem
     }
 
     private void onNext() {
-        OnNextClickedCallback onNextClickedCallback = new OnNextClickedCallback();
-        onNextClickedCallback.goToNextStep();
+        // Show progress with loading message
+        showProgress("Loading...");
+
+        // Simulate async operation with delay
+        new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+            hideProgress();
+            OnNextClickedCallback onNextClickedCallback = new OnNextClickedCallback();
+            onNextClickedCallback.goToNextStep();
+        }, 1500);
     }
 
     private void onComplete() {

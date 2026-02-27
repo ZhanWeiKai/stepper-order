@@ -4,6 +4,6 @@
     android:id="@+id/stepper_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:ms_stepperFeedbackType="tabs|content_progress|disabled_bottom_navigation"
+    app:ms_stepperFeedbackType="tabs|content_progress|disabled_bottom_navigation|content_fade|disabled_content_interaction"
     app:ms_tabNavigationEnabled="true"
     app:ms_showBottomNavigation="true" />

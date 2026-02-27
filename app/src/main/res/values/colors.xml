@@ -10,7 +10,7 @@
     <color name="ms_errorColor">#f44336</color>
     <color name="ms_selectedColor">@color/ms_material_blue_500</color>
     <color name="ms_unselectedColor">@color/ms_material_grey_400</color>
-    <color name="ms_bottomNavigationButtonTextColor">@color/ms_material_grey_400</color>
+    <color name="ms_bottomNavigationButtonTextColor">@color/ms_material_blue_500</color>
     <color name="ms_bottomNavigationBackgroundColor">#FFFFFF</color>
     <color name="ms_defaultButtonBackgroundColor">#15000000</color>
     <color name="ms_defaultContentOverlayColor">@color/ms_white_54_opacity</color>
