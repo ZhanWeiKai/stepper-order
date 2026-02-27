@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Stepper icon - represents steps/progress -->
+    <group android:translateX="27" android:translateY="27">
+        <!-- Step 1 circle -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M12,12m-8,0a8,8 0,1 1,16 0a8,8 0,1 1,-16 0"/>
+        <path
+            android:fillColor="#2196F3"
+            android:pathData="M12,12m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0"/>
+
+        <!-- Connector line 1 -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M20,11h10v2H20z"/>
+
+        <!-- Step 2 circle -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M42,12m-8,0a8,8 0,1 1,16 0a8,8 0,1 1,-16 0"/>
+        <path
+            android:fillColor="#2196F3"
+            android:pathData="M42,12m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0"/>
+
+        <!-- Connector line 2 -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M50,11h10v2H50z"/>
+
+        <!-- Step 3 circle -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M12,42m-8,0a8,8 0,1 1,16 0a8,8 0,1 1,-16 0"/>
+
+        <!-- Connector line 3 -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M20,41h10v2H20z"/>
+
+        <!-- Step 4 circle (checkmark) -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M42,42m-8,0a8,8 0,1 1,16 0a8,8 0,1 1,-16 0"/>
+        <!-- Checkmark -->
+        <path
+            android:fillColor="#4CAF50"
+            android:pathData="M38,42l3,3 6,-6 -1.5,-1.5L41,42l-1.5,-1.5z"/>
+    </group>
+</vector>

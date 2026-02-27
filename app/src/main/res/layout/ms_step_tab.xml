@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:layout_height="wrap_content"
+    tools:layout_width="wrap_content"
+    tools:parentTag="android.widget.RelativeLayout">
+
+    <FrameLayout
+        android:id="@+id/ms_iconContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true">
+
+        <ImageView
+            android:id="@+id/ms_stepIconBackground"
+            android:layout_width="@dimen/ms_step_tab_counter_size"
+            android:layout_height="@dimen/ms_step_tab_counter_size"
+            android:src="@drawable/ms_circle"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/ms_stepNumber"
+            android:layout_width="@dimen/ms_step_tab_counter_size"
+            android:layout_height="@dimen/ms_step_tab_counter_size"
+            android:gravity="center"
+            android:textColor="@color/ms_white"
+            android:textSize="@dimen/ms_step_tab_circle_font_size"
+            tools:text="1" />
+
+        <ImageView
+            android:id="@+id/ms_stepDoneIndicator"
+            android:layout_width="@dimen/ms_step_tab_counter_size"
+            android:layout_height="@dimen/ms_step_tab_counter_size"
+            android:src="@drawable/ms_ic_check"
+            android:visibility="gone"
+            tools:ignore="ContentDescription" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/ms_stepTextContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/ms_iconContainer"
+        android:layout_toRightOf="@+id/ms_iconContainer"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/ms_step_tab_text_lateral_padding"
+        android:paddingStart="@dimen/ms_step_tab_text_lateral_padding"
+        android:paddingRight="@dimen/ms_step_tab_text_lateral_padding"
+        android:paddingEnd="@dimen/ms_step_tab_text_lateral_padding">
+
+        <TextView
+            android:id="@+id/ms_stepTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/ms_black_87_opacity"
+            android:textSize="@dimen/ms_step_tab_title_font_size"
+            tools:text="Step 1" />
+
+        <TextView
+            android:id="@+id/ms_stepSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/ms_black_87_opacity"
+            android:textSize="@dimen/ms_step_tab_subtitle_font_size"
+            android:visibility="gone"
+            tools:text="Optional"
+            tools:visibility="visible" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/ms_stepDivider"
+        android:layout_width="@dimen/ms_step_tab_divider_length"
+        android:layout_height="@dimen/ms_step_tab_divider_thickness"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/ms_stepTextContainer"
+        android:layout_toRightOf="@+id/ms_stepTextContainer"
+        android:background="@color/ms_material_grey_400" />
+
+</merge>

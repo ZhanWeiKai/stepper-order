@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Stepper Feedback Demo</string>
+    <string name="ms_back">Back</string>
+    <string name="ms_next">Next</string>
+    <string name="ms_complete">Complete</string>
+    <string name="ms_default_step_title">Step</string>
+</resources>

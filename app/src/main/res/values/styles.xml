@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Application Theme -->
+    <style name="Theme.StepperFeedbackDemo" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/ms_material_blue_500</item>
+        <item name="colorPrimaryDark">@color/ms_material_blue_500</item>
+        <item name="colorAccent">@color/ms_material_blue_500</item>
+    </style>
+
+    <style name="MSNavBarButton" parent="Base.Widget.AppCompat.Button.Borderless">
+        <item name="android:textSize">@dimen/ms_navigation_button_text_size</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="MSNavBarButton.Back" tools:targetApi="jelly_bean_mr1">
+        <item name="android:gravity">left|start|center_vertical</item>
+    </style>
+
+    <style name="MSNavBarButton.Next" tools:targetApi="jelly_bean_mr1">
+        <item name="android:gravity">right|end|center_vertical</item>
+    </style>
+
+    <style name="MSNavBarButton.Complete" tools:targetApi="jelly_bean_mr1">
+        <item name="android:gravity">right|end|center_vertical</item>
+    </style>
+
+    <style name="Base.MSStepTabsContainer" parent="">
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="MSStepTabsContainer" parent="Base.MSStepTabsContainer">
+        <item name="android:background">@android:color/white</item>
+    </style>
+
+    <style name="MSBottomNavigation">
+        <item name="android:layout_height">@dimen/ms_bottom_navigation_bar_height</item>
+        <item name="android:background">@color/ms_bottomNavigationBackgroundColor</item>
+    </style>
+
+    <style name="MSColorableProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:layout_width">@dimen/ms_progress_bar_width</item>
+        <item name="android:layout_height">@dimen/ms_progress_bar_height</item>
+        <item name="android:padding">0dp</item>
+    </style>
+
+    <style name="MSStepTabsScrollView">
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:scrollbars">none</item>
+    </style>
+
+    <style name="MSStepTabsInnerContainer" tools:ignore="NewApi">
+        <item name="android:paddingLeft">@dimen/ms_tabs_container_lateral_padding</item>
+        <item name="android:paddingStart">@dimen/ms_tabs_container_lateral_padding</item>
+        <item name="android:paddingRight">@dimen/ms_tabs_container_lateral_padding</item>
+        <item name="android:paddingEnd">@dimen/ms_tabs_container_lateral_padding</item>
+    </style>
+
+    <style name="MSStepTabsProgressMessage" tools:targetApi="jelly_bean_mr1">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:paddingEnd">@dimen/ms_progress_message_lateral_padding</item>
+        <item name="android:paddingLeft">@dimen/ms_progress_message_lateral_padding</item>
+        <item name="android:paddingRight">@dimen/ms_progress_message_lateral_padding</item>
+        <item name="android:paddingStart">@dimen/ms_progress_message_lateral_padding</item>
+        <item name="android:textColor">@color/ms_black_87_opacity</item>
+        <item name="android:textSize">@dimen/ms_progress_message_font_size</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
+    <style name="MSStepPagerProgressBarStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="MSStepPagerOverlayStyle">
+        <item name="android:background">@color/ms_defaultContentOverlayColor</item>
+    </style>
+
+    <style name="MSDefaultStepperLayoutTheme">
+        <item name="ms_tabsContainerStyle">@style/MSStepTabsContainer</item>
+        <item name="ms_bottomNavigationStyle">@style/MSBottomNavigation</item>
+        <item name="ms_backNavigationButtonStyle">@style/MSNavBarButton.Back</item>
+        <item name="ms_nextNavigationButtonStyle">@style/MSNavBarButton.Next</item>
+        <item name="ms_completeNavigationButtonStyle">@style/MSNavBarButton.Complete</item>
+        <item name="ms_colorableProgressBarStyle">@style/MSColorableProgressBar</item>
+        <item name="ms_stepPagerProgressBarStyle">@style/MSStepPagerProgressBarStyle</item>
+        <item name="ms_stepPagerOverlayStyle">@style/MSStepPagerOverlayStyle</item>
+        <item name="ms_stepTabsScrollViewStyle">@style/MSStepTabsScrollView</item>
+        <item name="ms_stepTabsInnerContainerStyle">@style/MSStepTabsInnerContainer</item>
+        <item name="ms_stepTabsProgressMessageStyle">@style/MSStepTabsProgressMessage</item>
+    </style>
+
+</resources>

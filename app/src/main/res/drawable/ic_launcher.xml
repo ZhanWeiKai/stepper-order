@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fallback launcher icon for older Android versions -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <!-- Background -->
+    <path
+        android:fillColor="#2196F3"
+        android:pathData="M24,24m-22,0a22,22 0,1 1,44 0a22,22 0,1 1,-44 0"/>
+    <!-- Step circles -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M14,16m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M34,16m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M14,32m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M34,32m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0"/>
+    <!-- Connector lines -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M18,15h12v2H18z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M14,20v8h2v-8z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M18,31h12v2H18z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M32,20v8h2v-8z"/>
+</vector>

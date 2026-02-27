@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="StepperLayout">
+        <attr name="ms_stepperFeedbackType">
+            <flag name="none" value="1" />
+            <flag name="tabs" value="2" />
+            <flag name="content_progress" value="4" />
+            <flag name="disabled_bottom_navigation" value="8" />
+            <flag name="disabled_content_interaction" value="16" />
+            <flag name="content_fade" value="32" />
+            <flag name="content_overlay" value="64" />
+        </attr>
+
+        <attr name="ms_stepperFeedback_contentFadeAlpha" format="float" />
+        <attr name="ms_stepperFeedback_contentOverlayBackground" format="reference" />
+        <attr name="ms_stepperLayoutTheme" format="reference" />
+        <attr name="ms_backButtonColor" format="color|reference" />
+        <attr name="ms_nextButtonColor" format="color|reference" />
+        <attr name="ms_completeButtonColor" format="color|reference" />
+        <attr name="ms_bottomNavigationBackground" format="reference" />
+        <attr name="ms_backButtonBackground" format="reference" />
+        <attr name="ms_nextButtonBackground" format="reference" />
+        <attr name="ms_completeButtonBackground" format="reference" />
+        <attr name="ms_backButtonText" format="string|reference" />
+        <attr name="ms_nextButtonText" format="string|reference" />
+        <attr name="ms_completeButtonText" format="string|reference" />
+        <attr name="ms_showBackButtonOnFirstStep" format="boolean" />
+        <attr name="ms_showBottomNavigation" format="boolean" />
+        <attr name="ms_showErrorStateEnabled" format="boolean" />
+        <attr name="ms_showErrorStateOnBackEnabled" format="boolean" />
+        <attr name="ms_showErrorMessageEnabled" format="boolean" />
+        <attr name="ms_tabNavigationEnabled" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="RightNavigationButton">
+        <attr name="state_verification_failed" format="boolean" />
+    </declare-styleable>
+
+    <attr name="ms_stepperStyle" format="reference" />
+
+    <declare-styleable name="StepperLayoutTheme">
+        <attr name="ms_bottomNavigationStyle" format="reference" />
+        <attr name="ms_tabsContainerStyle" format="reference" />
+        <attr name="ms_backNavigationButtonStyle" format="reference" />
+        <attr name="ms_nextNavigationButtonStyle" format="reference" />
+        <attr name="ms_completeNavigationButtonStyle" format="reference" />
+        <attr name="ms_colorableProgressBarStyle" format="reference" />
+        <attr name="ms_stepPagerProgressBarStyle" format="reference" />
+        <attr name="ms_stepPagerOverlayStyle" format="reference" />
+        <attr name="ms_stepTabsScrollViewStyle" format="reference" />
+        <attr name="ms_stepTabsInnerContainerStyle" format="reference" />
+        <attr name="ms_stepTabsProgressMessageStyle" format="reference" />
+    </declare-styleable>
+
+</resources>

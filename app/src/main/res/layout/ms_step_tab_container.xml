@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.stepperfeedback.widget.StepTab xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/ms_step_tab_height"
+    android:paddingLeft="@dimen/ms_tabs_container_lateral_padding"
+    android:paddingStart="@dimen/ms_tabs_container_lateral_padding"
+    android:paddingRight="0dp"
+    android:paddingEnd="0dp"
+    tools:theme="@style/MSDefaultStepperLayoutTheme" />
