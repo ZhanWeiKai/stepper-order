@@ -117,6 +117,7 @@ public class StepperLayout extends LinearLayout implements TabsContainer.TabItem
     private StepAdapter mAdapter;
     private FrameLayout mContentContainer;
     private List<View> mStepViews = new ArrayList<>();
+    private View mCurrentStepView;
 
     public StepperLayout(Context context) {
         this(context, null);
@@ -324,12 +325,18 @@ public class StepperLayout extends LinearLayout implements TabsContainer.TabItem
 
     private void showStep(int position) {
         if (mContentContainer != null && position >= 0 && position < mStepViews.size()) {
-            mContentContainer.removeAllViews();
+            // Only remove the current step view, not all views (to preserve ProgressBar and Overlay)
+            if (mCurrentStepView != null && mCurrentStepView.getParent() == mContentContainer) {
+                mContentContainer.removeView(mCurrentStepView);
+            }
+
             View stepView = mStepViews.get(position);
             if (stepView != null && stepView.getParent() != null) {
                 ((ViewGroup) stepView.getParent()).removeView(stepView);
             }
-            mContentContainer.addView(stepView);
+            // Add step view at index 0 so ProgressBar stays on top
+            mContentContainer.addView(stepView, 0);
+            mCurrentStepView = stepView;
         }
         mTabsContainer.updateSteps(position);
     }

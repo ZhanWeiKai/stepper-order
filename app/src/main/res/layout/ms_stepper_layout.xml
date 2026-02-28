@@ -36,12 +36,12 @@
         <ProgressBar
             android:id="@+id/ms_stepPagerProgressBar"
             style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_gravity="center"
             android:indeterminate="true"
             android:visibility="gone"
-            android:indeterminateTint="@color/ms_material_blue_500" />
+            android:indeterminateTint="#FF2196F3" />
 
     </FrameLayout>
 
