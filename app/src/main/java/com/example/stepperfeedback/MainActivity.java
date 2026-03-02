@@ -279,9 +279,35 @@ public class MainActivity extends AppCompatActivity implements StepperLayout.Ste
         public View getContentView(int position) {
             if (position == 0) {
                 return createQrCodeView();
+            } else if (position == 1) {
+                return createBoxPlacementView();
             } else {
                 return createStandardStepView(position);
             }
+        }
+
+        private View createBoxPlacementView() {
+            // Create container with background color
+            LinearLayout container = new LinearLayout(MainActivity.this);
+            container.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT
+            ));
+            container.setOrientation(LinearLayout.VERTICAL);
+            container.setGravity(Gravity.CENTER);
+            container.setBackgroundColor(STEP_COLORS[1]);
+
+            // Add BoxPlacementView
+            com.example.stepperfeedback.widget.BoxPlacementView boxView =
+                    new com.example.stepperfeedback.widget.BoxPlacementView(MainActivity.this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT
+            );
+            boxView.setLayoutParams(params);
+
+            container.addView(boxView);
+            return container;
         }
 
         private View createQrCodeView() {
