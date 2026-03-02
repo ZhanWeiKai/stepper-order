@@ -206,6 +206,10 @@ public class StepperLayout extends LinearLayout implements TabsContainer.TabItem
         mNextNavigationButton.setEnabled(enabled);
     }
 
+    public void setNextButtonVisibility(int visibility) {
+        mNextNavigationButton.setVisibility(visibility);
+    }
+
     public void setCompleteButtonEnabled(boolean enabled) {
         mCompleteNavigationButton.setEnabled(enabled);
     }
