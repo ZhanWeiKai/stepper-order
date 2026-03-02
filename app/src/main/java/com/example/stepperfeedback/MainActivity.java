@@ -106,6 +106,9 @@ public class MainActivity extends AppCompatActivity implements StepperLayout.Ste
 
         mStepperLayout.setFeedbackType(feedbackType);
 
+        // Disable tab click navigation - only allow navigation via Next/Back buttons
+        mStepperLayout.setTabNavigationEnabled(false);
+
         // Create and set adapter
         mStepperLayout.setAdapter(new DemoStepAdapter());
     }
