@@ -109,6 +109,9 @@ public class MainActivity extends AppCompatActivity implements StepperLayout.Ste
         // Disable tab click navigation - only allow navigation via Next/Back buttons
         mStepperLayout.setTabNavigationEnabled(false);
 
+        // Hide Back button completely
+        mStepperLayout.setBackButtonVisibility(View.GONE);
+
         // Create and set adapter
         mStepperLayout.setAdapter(new DemoStepAdapter());
     }
@@ -281,9 +284,35 @@ public class MainActivity extends AppCompatActivity implements StepperLayout.Ste
                 return createQrCodeView();
             } else if (position == 1) {
                 return createBoxPlacementView();
+            } else if (position == 2) {
+                return createVolumeMeasurementView();
             } else {
                 return createStandardStepView(position);
             }
+        }
+
+        private View createVolumeMeasurementView() {
+            // Create container with background color
+            LinearLayout container = new LinearLayout(MainActivity.this);
+            container.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT
+            ));
+            container.setOrientation(LinearLayout.VERTICAL);
+            container.setGravity(Gravity.CENTER);
+            container.setBackgroundColor(STEP_COLORS[2]);
+
+            // Add VolumeMeasurementView
+            com.example.stepperfeedback.widget.VolumeMeasurementView volumeView =
+                    new com.example.stepperfeedback.widget.VolumeMeasurementView(MainActivity.this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT
+            );
+            volumeView.setLayoutParams(params);
+
+            container.addView(volumeView);
+            return container;
         }
 
         private View createBoxPlacementView() {

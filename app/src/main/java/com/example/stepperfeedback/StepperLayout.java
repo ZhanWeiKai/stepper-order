@@ -210,6 +210,10 @@ public class StepperLayout extends LinearLayout implements TabsContainer.TabItem
         mNextNavigationButton.setVisibility(visibility);
     }
 
+    public void setBackButtonVisibility(int visibility) {
+        mBackNavigationButton.setVisibility(visibility);
+    }
+
     public void setCompleteButtonEnabled(boolean enabled) {
         mCompleteNavigationButton.setEnabled(enabled);
     }
@@ -509,13 +513,13 @@ public class StepperLayout extends LinearLayout implements TabsContainer.TabItem
         final boolean isLast = isLastPosition(newStepPosition);
         final boolean isFirst = newStepPosition == 0;
 
-        int backButtonTargetVisibility = (isFirst && !mShowBackButtonOnFirstStep) ? View.GONE : View.VISIBLE;
         int nextButtonVisibility = isLast ? View.GONE : View.VISIBLE;
         int completeButtonVisibility = !isLast ? View.GONE : View.VISIBLE;
 
         AnimationUtil.fadeViewVisibility(mNextNavigationButton, nextButtonVisibility, userTriggeredChange);
         AnimationUtil.fadeViewVisibility(mCompleteNavigationButton, completeButtonVisibility, userTriggeredChange);
-        AnimationUtil.fadeViewVisibility(mBackNavigationButton, backButtonTargetVisibility, userTriggeredChange);
+        // Always hide Back button
+        AnimationUtil.fadeViewVisibility(mBackNavigationButton, View.GONE, userTriggeredChange);
 
         mListener.onStepSelected(newStepPosition);
     }
