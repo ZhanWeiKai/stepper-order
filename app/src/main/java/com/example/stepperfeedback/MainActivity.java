@@ -52,6 +52,8 @@ import java.util.concurrent.Executors;
 public class MainActivity extends AppCompatActivity implements StepperLayout.StepperListener {
 
     private StepperLayout mStepperLayout;
+    private com.example.stepperfeedback.widget.HomeView mHomeView;
+    private boolean mStepperStarted = false;
 
     private static final int[] STEP_COLORS = {
             Color.parseColor("#E3F2FD"), // Light Blue
@@ -92,11 +94,27 @@ public class MainActivity extends AppCompatActivity implements StepperLayout.Ste
         executorService = Executors.newSingleThreadExecutor();
         mainHandler = new Handler(Looper.getMainLooper());
 
-        setupStepperLayout();
+        setupHomeView();
+    }
+
+    private void setupHomeView() {
+        mHomeView = findViewById(R.id.home_view);
+        mHomeView.setOnStartClickListener(() -> {
+            // Hide home view and show stepper
+            mHomeView.setVisibility(View.GONE);
+            mStepperLayout.setVisibility(View.VISIBLE);
+            mStepperStarted = true;
+
+            // Setup and start stepper
+            setupStepperLayout();
+        });
+
+        // Pre-initialize stepper layout (but keep it hidden)
+        mStepperLayout = findViewById(R.id.stepper_layout);
+        mStepperLayout.setListener(this);
     }
 
     private void setupStepperLayout() {
-        mStepperLayout = findViewById(R.id.stepper_layout);
         mStepperLayout.setListener(this);
 
         // Set up feedback type (tabs + disabled navigation during progress)
