@@ -28,12 +28,15 @@ public class VolumeMeasurementView extends View {
     private static final int COLOR_RESULT_TEXT = Color.parseColor("#424242");
     private static final int COLOR_PRICE = Color.parseColor("#4CAF50");
 
-    // Box dimensions (fixed values)
-    private static final int BOX_WIDTH = 30;  // cm
-    private static final int BOX_HEIGHT = 25; // cm
-    private static final int BOX_DEPTH = 20;  // cm
-    private static final int BOX_VOLUME = BOX_WIDTH * BOX_HEIGHT * BOX_DEPTH; // cm³
-    private static final String BOX_PRICE = "¥25.00";
+    // Box dimensions (dynamic values)
+    private float boxWidth = 0;   // mm
+    private float boxHeight = 0;  // mm
+    private float boxLength = 0;  // mm
+    private String boxPrice = "";
+    private boolean hasResult = false;
+
+    // Callback
+    private OnMeasureClickListener measureClickListener;
 
     // Box drawing size
     private int boxSize = 120;
@@ -41,7 +44,7 @@ public class VolumeMeasurementView extends View {
 
     // Animation state
     private float scanLineY;
-    private boolean isMeasuring = true;
+    private boolean isMeasuring = false;  // 初始不显示测量动画
     private boolean showResults = false;
     private float resultAlpha = 0f;
 
@@ -155,7 +158,8 @@ public class VolumeMeasurementView extends View {
 
         scanLineY = boxTop - 60;
 
-        startMeasurementAnimation();
+        // 不再自动开始动画，等待用户点击测量按钮
+        // startMeasurementAnimation();
     }
 
     @Override
@@ -234,8 +238,13 @@ public class VolumeMeasurementView extends View {
 
         float p = perspectiveOffset;
 
-        // Height dimension (left side, vertical)
-        float heightX = boxLeft - 50;
+        // 显示的值 (mm 单位，带"高:"、"宽:"、"长:"标签)
+        String heightLabel = String.format("高: %.0f mm", boxHeight);
+        String widthLabel = String.format("宽: %.0f mm", boxWidth);
+        String lengthLabel = String.format("长: %.0f mm", boxLength);
+
+        // Height dimension (left side, vertical) - 高度
+        float heightX = boxLeft - 60;
         canvas.drawLine(heightX, boxTop + p, heightX, boxBottom + p, dimensionLinePaint);
         // Arrows
         canvas.drawLine(heightX - 10, boxTop + p + 10, heightX, boxTop + p, dimensionLinePaint);
@@ -245,26 +254,26 @@ public class VolumeMeasurementView extends View {
         // Label
         canvas.save();
         canvas.rotate(-90, heightX - 25, (boxTop + boxBottom) / 2 + p);
-        canvas.drawText(BOX_HEIGHT + " cm", heightX - 25, (boxTop + boxBottom) / 2 + p, dimensionTextPaint);
+        canvas.drawText(heightLabel, heightX - 25, (boxTop + boxBottom) / 2 + p, dimensionTextPaint);
         canvas.restore();
 
-        // Width dimension (top, horizontal)
-        float widthY = boxTop - 30;
+        // Width dimension (top, horizontal) - 宽度
+        float widthY = boxTop - 40;
         canvas.drawLine(boxLeft, widthY, boxRight, widthY, dimensionLinePaint);
         canvas.drawLine(boxLeft + 10, widthY - 10, boxLeft, widthY, dimensionLinePaint);
         canvas.drawLine(boxLeft + 10, widthY + 10, boxLeft, widthY, dimensionLinePaint);
         canvas.drawLine(boxRight - 10, widthY - 10, boxRight, widthY, dimensionLinePaint);
         canvas.drawLine(boxRight - 10, widthY + 10, boxRight, widthY, dimensionLinePaint);
-        canvas.drawText(BOX_WIDTH + " cm", centerX, widthY - 15, dimensionTextPaint);
+        canvas.drawText(widthLabel, centerX, widthY - 15, dimensionTextPaint);
 
-        // Depth dimension (right side, diagonal)
+        // Depth dimension (right side, diagonal) - 长度
         float depthStartX = boxRight + p + 20;
         float depthStartY = boxBottom + p + 20;
-        float depthEndX = boxRight + p + 50;
-        float depthEndY = boxBottom + p + 50;
+        float depthEndX = boxRight + p + 80;
+        float depthEndY = boxBottom + p + 80;
         canvas.drawLine(depthStartX, depthStartY, depthEndX, depthEndY, dimensionLinePaint);
         // Label
-        canvas.drawText(BOX_DEPTH + " cm", depthEndX + 50, depthEndY, dimensionTextPaint);
+        canvas.drawText(lengthLabel, depthEndX + 20, depthEndY, dimensionTextPaint);
     }
 
     private void drawResultCard(Canvas canvas) {
@@ -272,43 +281,42 @@ public class VolumeMeasurementView extends View {
         resultTextPaint.setAlpha((int) (resultAlpha * 255));
         priceTextPaint.setAlpha((int) (resultAlpha * 255));
 
+        // 增大卡片高度以显示更多内容
         float cardLeft = centerX - 180;
         float cardTop = boxBottom + 130;
         float cardRight = centerX + 180;
-        float cardBottom = cardTop + 130;
+        float cardBottom = cardTop + 160;
 
         // Draw card background
         RectF cardRect = new RectF(cardLeft, cardTop, cardRight, cardBottom);
         canvas.drawRoundRect(cardRect, 16, 16, resultBgPaint);
 
-        // Volume text
-        String volumeText = "Volume: " + String.format("%,d", BOX_VOLUME) + " cm³";
-        canvas.drawText(volumeText, centerX, cardTop + 50, resultTextPaint);
+        // 计算体积 (cm³)
+        float volumeCm3 = (boxWidth * boxLength * boxHeight) / 1000f;
 
-        // Price text
-        canvas.drawText(BOX_PRICE, centerX, cardTop + 105, priceTextPaint);
+        // Volume text - 标题
+        String volumeText = String.format("体积: %.1f cm³", volumeCm3);
+        canvas.drawText(volumeText, centerX, cardTop + 45, resultTextPaint);
+
+        // 分别显示长、宽、高
+        String dimDetail1 = String.format("长: %.0f mm  宽: %.0f mm", boxLength, boxWidth);
+        String dimDetail2 = String.format("高: %.0f mm", boxHeight);
+        canvas.drawText(dimDetail1, centerX, cardTop + 95, priceTextPaint);
+        canvas.drawText(dimDetail2, centerX, cardTop + 140, priceTextPaint);
     }
 
     private void startMeasurementAnimation() {
         if (isAnimating) return;
         isAnimating = true;
 
-        // Scan line animation (loop for 3 seconds)
+        // 扫描线动画 - 无限循环直到 setResult() 被调用
         scanAnimator = ValueAnimator.ofFloat(boxTop - 80, boxBottom + perspectiveOffset + 40);
         scanAnimator.setDuration(1500);
-        scanAnimator.setRepeatCount(1); // 2 cycles = 3 seconds
+        scanAnimator.setRepeatCount(ValueAnimator.INFINITE); // 无限循环
+        scanAnimator.setRepeatMode(ValueAnimator.RESTART);
         scanAnimator.addUpdateListener(animation -> {
             scanLineY = (float) animation.getAnimatedValue();
             invalidate();
-        });
-        scanAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (!isAnimating) return;
-                isMeasuring = false;
-                showResults = true;
-                startFadeInResultAnimation();
-            }
         });
         scanAnimator.start();
     }
@@ -340,5 +348,74 @@ public class VolumeMeasurementView extends View {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         stopAnimation();
+    }
+
+    /**
+     * 设置测量结果
+     * @param width 宽度
+     * @param length 长度
+     * @param height 高度
+     */
+    public void setResult(float width, float length, float height) {
+        this.boxWidth = width;
+        this.boxLength = length;
+        this.boxHeight = height;
+        this.hasResult = true;
+
+        // 计算价格 (示例: 每cm³ 0.001元)
+        float volumeCm3 = (width * length * height) / 1000f;
+        this.boxPrice = String.format("¥%.2f", volumeCm3 * 0.001f);
+
+        // 停止扫描动画
+        isAnimating = false;
+        if (scanAnimator != null) {
+            scanAnimator.cancel();
+        }
+
+        // 触发显示结果的动画
+        isMeasuring = false;
+        showResults = true;
+        startFadeInResultAnimation();
+    }
+
+    /**
+     * 重置视图状态
+     */
+    public void reset() {
+        // 先停止之前的动画
+        stopAnimation();
+
+        this.boxWidth = 0;
+        this.boxLength = 0;
+        this.boxHeight = 0;
+        this.boxPrice = "";
+        this.hasResult = false;
+        this.isMeasuring = true;
+        this.showResults = false;
+        this.resultAlpha = 0f;
+        this.isAnimating = false;
+        invalidate();
+    }
+
+    /**
+     * 开始测量动画
+     */
+    public void startMeasure() {
+        reset();
+        startMeasurementAnimation();
+    }
+
+    /**
+     * 设置测量按钮点击监听器
+     */
+    public void setOnMeasureClickListener(OnMeasureClickListener listener) {
+        this.measureClickListener = listener;
+    }
+
+    /**
+     * 测量按钮点击回调接口
+     */
+    public interface OnMeasureClickListener {
+        void onMeasureClick();
     }
 }

@@ -175,14 +175,108 @@ public class ObjectMeasurer {
 
     // ==================== 生命周期 ====================
 
+    // 传感器配置回调接口
+    public interface SensorConfigCallback {
+        void onProgress(String message);
+        void onSuccess();
+        void onError(String error);
+    }
+
+    private SensorConfigCallback sensorConfigCallback;
+
     /**
      * 开始接收数据
      */
     public void start() {
+        start(null);
+    }
+
+    /**
+     * 开始接收数据，带配置回调
+     */
+    public void start(SensorConfigCallback callback) {
         if (running) return;
-        running = true;
-        startUsbReadThread();
-        Log.d(TAG, "ObjectMeasurer started");
+        this.sensorConfigCallback = callback;
+
+        // 在后台线程发送 AT 指令
+        new Thread(() -> {
+            try {
+                notifyConfigProgress("正在配置传感器...");
+
+                sendAtCommand("AT+ISP=0\r\n");  // 先停止数据流
+                Thread.sleep(500);
+                notifyConfigProgress("停止数据流...");
+
+                sendAtCommand("AT+BINN=1\r\n"); // 二进制模式
+                Thread.sleep(200);
+                notifyConfigProgress("设置二进制模式...");
+
+                sendAtCommand("AT+UNIT=0\r\n"); // 单位
+                Thread.sleep(200);
+                notifyConfigProgress("设置单位...");
+
+                sendAtCommand("AT+FPS=15\r\n"); // 帧率
+                Thread.sleep(200);
+                notifyConfigProgress("设置帧率...");
+
+                sendAtCommand("AT+DISP=6\r\n"); // 显示模式
+                Thread.sleep(200);
+                notifyConfigProgress("设置显示模式...");
+
+                sendAtCommand("AT+SAVE\r\n");   // 保存配置
+                Thread.sleep(500);
+                notifyConfigProgress("保存配置...");
+
+                sendAtCommand("AT+ISP=1\r\n");  // 启动数据流
+                Thread.sleep(2000);  // 等待数据流稳定
+                notifyConfigProgress("启动数据流...");
+
+                Log.d(TAG, "AT commands sent, sensor data stream started");
+
+                running = true;
+                startUsbReadThread();
+
+                notifyConfigSuccess();
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to send AT commands: " + e.getMessage());
+                notifyConfigError("传感器配置失败: " + e.getMessage());
+            }
+        }, "SensorConfigThread").start();
+    }
+
+    private void notifyConfigProgress(String message) {
+        Log.d(TAG, "Sensor config: " + message);
+        if (sensorConfigCallback != null) {
+            mainHandler.post(() -> sensorConfigCallback.onProgress(message));
+        }
+    }
+
+    private void notifyConfigSuccess() {
+        if (sensorConfigCallback != null) {
+            mainHandler.post(() -> {
+                sensorConfigCallback.onSuccess();
+                sensorConfigCallback = null;
+            });
+        }
+    }
+
+    private void notifyConfigError(String error) {
+        if (sensorConfigCallback != null) {
+            mainHandler.post(() -> {
+                sensorConfigCallback.onError(error);
+                sensorConfigCallback = null;
+            });
+        }
+    }
+
+    private void sendAtCommand(String cmd) {
+        try {
+            usbSerialPort.write(cmd.getBytes(), 500);
+            Log.d(TAG, "AT sent: " + cmd.trim());
+        } catch (Exception e) {
+            Log.e(TAG, "AT command failed: " + cmd.trim() + " - " + e.getMessage());
+            throw new RuntimeException("AT command failed: " + cmd.trim(), e);
+        }
     }
 
     /**
@@ -432,7 +526,12 @@ public class ObjectMeasurer {
     }
 
     private void processCalibrationSample() {
-        if (calibrationCallback == null || latestMedianDepth == null) return;
+        if (calibrationCallback == null || latestMedianDepth == null) {
+            Log.w(TAG, "processCalibrationSample: callback=" + calibrationCallback + ", latestMedianDepth=" + (latestMedianDepth != null));
+            return;
+        }
+
+        Log.d(TAG, "Processing calibration sample, stableCount=" + calibrateStableCount + "/" + config.stableCountCalibrate);
 
         float[][] currentFrame = copyDepthArray(latestMedianDepth);
 
@@ -440,19 +539,24 @@ public class ObjectMeasurer {
             baselineDepth = copyDepthArray(currentFrame);
             calibrationFrames.add(copyDepthArray(currentFrame));
             calibrateStableCount = 1;
+            Log.d(TAG, "Calibration: first frame collected");
             notifyCalibrationProgress(1);
         } else {
             float avgDiff = MedianFilter.calculateAverageDifference(baselineDepth, currentFrame);
+            Log.d(TAG, String.format("Calibration: avgDiff=%.2f, threshold=%.2f", avgDiff, config.baselineAvgThreshold));
 
             if (avgDiff < config.baselineAvgThreshold) {
                 calibrateStableCount++;
                 calibrationFrames.add(copyDepthArray(currentFrame));
+                Log.d(TAG, "Calibration: stable, count=" + calibrateStableCount);
                 notifyCalibrationProgress(calibrateStableCount);
 
                 if (calibrateStableCount >= config.stableCountCalibrate) {
+                    Log.d(TAG, "Calibration: stable count reached, finishing...");
                     finishCalibration();
                 }
             } else {
+                Log.w(TAG, "Calibration: unstable (avgDiff=" + avgDiff + "), resetting...");
                 baselineDepth = copyDepthArray(currentFrame);
                 calibrationFrames.clear();
                 calibrationFrames.add(copyDepthArray(currentFrame));
@@ -602,8 +706,14 @@ public class ObjectMeasurer {
     private void processMeasurementSample() {
         if ((measureCallback == null && continuousMeasureCallback == null) ||
                 latestMedianDepth == null || baselineDepth == null) {
+            Log.w(TAG, "processMeasurementSample: 条件不满足 - callback=" +
+                    (measureCallback != null ? "有" : "无") +
+                    ", latestMedianDepth=" + (latestMedianDepth != null ? "有" : "无") +
+                    ", baselineDepth=" + (baselineDepth != null ? "有" : "无"));
             return;
         }
+
+        Log.d(TAG, "processMeasurementSample: 开始处理测量样本");
 
         float[][] currentDepth = copyDepthArray(latestMedianDepth);
 
@@ -616,9 +726,13 @@ public class ObjectMeasurer {
         ObjectDimensionCalculator.DimensionResult result =
                 calculator.calculateDimensionsByCalibratedRatioWithMedianData(pixelSizeX, pixelSizeY);
 
+        Log.d(TAG, "计算结果: " + (result != null ? result.toString() : "null"));
+
         MeasureResult measureResult = convertToMeasureResult(result);
 
         if (result == null || result.validPixelCount == 0) {
+            Log.w(TAG, "未检测到物体: result=" + (result != null ? "有" : "无") +
+                    ", validPixelCount=" + (result != null ? result.validPixelCount : 0));
             notifyMeasureError(MeasureError.of(MeasureError.ErrorCode.OBJECT_NOT_DETECTED));
             return;
         }
@@ -717,12 +831,16 @@ public class ObjectMeasurer {
         windowMaxDepthDiffs.clear();
         windowFrameCount = 0;
 
+        Log.d(TAG, String.format("startWindowSampling: samplesPerWindow=%d, sampleIntervalMs=%d, sampleFastIntervalMs=%d",
+                config.samplesPerWindow, config.sampleIntervalMs, config.sampleFastIntervalMs));
+
         samplingRunnable = new Runnable() {
             @Override
             public void run() {
                 if (!running || samplingRunnable != this) return;
 
                 if (latestDepthData == null) {
+                    Log.w(TAG, "startWindowSampling: latestDepthData is null, waiting...");
                     samplingHandler.postDelayed(this, config.sampleFastIntervalMs);
                     return;
                 }
@@ -730,6 +848,8 @@ public class ObjectMeasurer {
                 float[][] frame = convertToDistanceMatrix(latestDepthData);
                 windowFrames.add(frame);
                 windowFrameCount++;
+
+                Log.d(TAG, String.format("Window sampling: frame %d/%d", windowFrameCount, config.samplesPerWindow));
 
                 if (state == State.MEASURING && baselineDepth != null) {
                     float maxDiff = calculateMaxDepthDiff(frame);
@@ -743,6 +863,8 @@ public class ObjectMeasurer {
                     } else {
                         latestMedianDepth = MedianFilter.medianFrames(windowFrames);
                     }
+
+                    Log.d(TAG, "Window complete, processing sample... state=" + state);
 
                     windowFrames.clear();
                     windowMaxDepthDiffs.clear();

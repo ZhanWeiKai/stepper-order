@@ -364,7 +364,9 @@ public class StepperLayout extends LinearLayout implements TabsContainer.TabItem
 
         bindViews();
 
-        mPager.setOnTouchListener((view, motionEvent) -> true);
+        // Hide the ViewPager since we're using direct FrameLayout children for content
+        // This prevents it from intercepting touch events
+        mPager.setVisibility(GONE);
 
         initNavigation();
 
